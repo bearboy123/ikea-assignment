@@ -48,6 +48,12 @@ class ProductsDao {
       });
       this.products.push({ name: name, contains: composeData });
     });
+    this.products.forEach((x) => {
+      this.buildProducts();
+    });
+  }
+
+  buildProducts() {
     if (this.inventory && this.inventoryCopy) {
       let leastStockInInventory = this.findMinMax(this.inventoryCopy);
       let productHavingLeastStock = this.products.find((x) => {
@@ -57,17 +63,6 @@ class ProductsDao {
       const getLeastStock = () => {
         return leastStockInInventory?.stock || 0;
       };
-      for (let i = 0; i < getLeastStock(); i++) {
-        if (productHavingLeastStock)
-          if (!this.createProduct(productHavingLeastStock)) {
-            break;
-          }
-      }
-      leastStockInInventory = this.findMinMax(this.inventoryCopy);
-      productHavingLeastStock = this.products.find((x) => {
-        const arrayIds = x.contains.map((y) => y.article.id);
-        return arrayIds.includes(leastStockInInventory?.article.id || 0);
-      });
       for (let i = 0; i < getLeastStock(); i++) {
         if (productHavingLeastStock)
           if (!this.createProduct(productHavingLeastStock)) {
@@ -93,7 +88,6 @@ class ProductsDao {
     const prodArticles = product.contains;
     let articlesModified = 0;
     prodArticles.forEach((x) => {
-      console.log(this.inventoryCopy);
       this.inventoryCopy?.forEach((y) => {
         if (y.article.id === x.article.id) {
           y.stock = y.stock >= x.amount ? y.stock - x.amount : y.stock;

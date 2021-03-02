@@ -48,17 +48,12 @@ class ProductsDao {
       });
       this.products.push({ name: name, contains: composeData });
     });
-    console.log("hello2", this.articles);
-    console.log("hello3", this.products);
-    console.log("hello4", this.inventory);
     if (this.inventory && this.inventoryCopy) {
-      console.log(this.findMinMax(this.inventory));
       let leastStockInInventory = this.findMinMax(this.inventoryCopy);
       let productHavingLeastStock = this.products.find((x) => {
         const arrayIds = x.contains.map((y) => y.article.id);
         return arrayIds.includes(leastStockInInventory?.article.id || 0);
       });
-      console.log("leastStockInInventory1", leastStockInInventory);
       const getLeastStock = () => {
         return leastStockInInventory?.stock || 0;
       };
@@ -69,7 +64,6 @@ class ProductsDao {
           }
       }
       leastStockInInventory = this.findMinMax(this.inventoryCopy);
-      console.log("leastStockInInventory2", leastStockInInventory);
       productHavingLeastStock = this.products.find((x) => {
         const arrayIds = x.contains.map((y) => y.article.id);
         return arrayIds.includes(leastStockInInventory?.article.id || 0);
@@ -80,18 +74,11 @@ class ProductsDao {
             break;
           }
       }
-      console.log("hello5", productHavingLeastStock);
     }
-    console.log("prodstock", this.prodStock);
-    // this.products.forEach((product) => {
-    //   this.createProduct(productHavingLeastStock);
-    // });
   }
 
   findMinMax(arr: Array<InventoryDto>) {
-    console.log("arr", arr);
     arr = arr.filter((x) => x.stock > 0);
-    console.log("arr1", arr);
     let min = arr[0].stock,
       max = arr[0].stock;
     for (let i = 1, len = arr.length; i < len; i++) {
@@ -104,7 +91,6 @@ class ProductsDao {
 
   createProduct(product: ProductDto) {
     const prodArticles = product.contains;
-    console.log("prodArticles", product);
     let articlesModified = 0;
     prodArticles.forEach((x) => {
       console.log(this.inventoryCopy);
@@ -126,7 +112,6 @@ class ProductsDao {
         });
       }
     }
-    console.log(this.inventoryCopy);
     return articlesModified === product.contains.length;
   }
 
@@ -139,11 +124,14 @@ class ProductsDao {
     return this.articles.find((x) => x.id === id) || {};
   }
 
-  // async removeProductByName(productName: string) {
-  //     const objIndex = this.users.findIndex((obj: { id: string; }) => obj.id === userId);
-  //     this.users.splice(objIndex, 1);
-  //     return `${productName} removed`;
-  // }
+  async removeProductByName(productName: string, quantity: number) {
+    this.prodStock.forEach((x) => {
+      if (x.product.name === productName) {
+        x.amount = x.amount >= quantity ? x.amount - quantity : 0;
+      }
+    });
+    return this.prodStock;
+  }
 }
 
 export default new ProductsDao();

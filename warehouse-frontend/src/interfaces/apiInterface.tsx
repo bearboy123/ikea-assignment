@@ -1,9 +1,7 @@
-import Article from "../models/article";
-import Product from "../models/product";
 
 interface ApiInterface {
-    getAllProducts(): Product[];
-    sellProduct(product: Product): Article[];
+    getAllProducts():any;
+    deleteProduct(name:string,quantity:number):any;
 }
 
 export default ApiInterface;

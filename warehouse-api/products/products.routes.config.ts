@@ -9,6 +9,8 @@ export class ProductsRoutes extends CommonRoutesConfig {
 
   configureRoutes() {
     this.app.route(`/products`).get(ProductsController.listProducts);
+
+    this.app.put(`/products/:productName`, ProductsController.deleteProduct);
     return this.app;
   }
 }

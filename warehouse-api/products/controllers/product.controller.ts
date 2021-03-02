@@ -9,5 +9,13 @@ class ProductController {
     const products = await productsService.list(100, 0);
     res.status(200).send(products);
   }
+
+  async deleteProduct(req: express.Request, res: express.Response) {
+    const products = await productsService.deleteByName(
+      req.body.name,
+      req.body.quantity
+    );
+    res.status(200).send(products);
+  }
 }
 export default new ProductController();
